@@ -11,9 +11,9 @@
 int main (int argc, char *argv[]){
       
     if (argc < 4){
-        printf ("Usage: %s IP PORT CMD [retry interval (ms)] [s]\n", argv[0]);
-	printf ("If the retry interval is not specified the shell will be executed only once\n");
-        printf ("By specifying s as last parameter the shell will be spawned as a subprocess\n");
+        printf ("Usage: %s IP PORT CMD RETRY_INTERVAL [s]\n", argv[0]);
+	printf ("If the retry interval is set to 0 the shell will be executed only once\n");
+        printf ("By specifying s as last parameter the shell will be spawned as a new process\n");
 	return 1;
     }
       
@@ -24,7 +24,7 @@ int main (int argc, char *argv[]){
     bool defaultCallback = 1;
       
      
-    if (argc >= 5){
+    if (atoi (argv[4]) != 0){
         callback = atoi (argv[4]);
         defaultCallback = 0;
     }
